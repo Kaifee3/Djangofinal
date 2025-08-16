@@ -1,0 +1,216 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}
+Chai our tweet
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    .tweets-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        color: white;
+    }
+
+    .create-tweet-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height:50px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 30px;
+        padding: 10px 15px;
+        max-width: 600px;
+        margin: 20px auto;
+        cursor: pointer;
+    }
+
+    .create-tweet-box:hover {
+        background: #f5f5f5;
+    }
+
+    .profilePhoto {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #007bff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        display: block;
+        margin: 0 auto;
+    }
+
+    .tweet-placeholder {
+        flex: 1;
+        color: #555;
+        text-decoration: none;
+        font-size: 16px;
+    }
+
+    .card {
+        width: 25rem;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        background: black;
+        position: relative;
+    }
+
+    .menu-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+        color: white;
+    }
+
+    .menu-options {
+        display: none;
+        position: absolute;
+        top: 35px;
+        right: 10px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    .menu-options a {
+        display: block;
+        padding: 8px 12px;
+        font-size: 14px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .menu-options a:hover {
+        background: #f5f5f5;
+    }
+
+    .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: white;
+    }
+
+    .card-text {
+        font-size: 15px;
+        color: white;
+        margin-top: 8px;
+    }
+
+    .tweet-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
+
+    .tweet-actions button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: white;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .tweet-actions button:hover {
+        color: #1DA1F2; 
+    }
+</style>
+
+<div class="create-tweet-box">
+    {% if request.user.is_authenticated and request.user.profile.profilePhoto %}
+    <img src="{{ request.user.profile.profilePhoto.url }}" alt="Profile" class="profilePhoto">
+    {% else %}
+    <img src="{% static 'default.png' %}" alt="Profile" class="profilePhoto">
+    {% endif %}
+    <a href="{% url 'tweet_create' %}" class="tweet-placeholder">Click here, to share your thoughts...</a>
+</div>
+
+{% if query %}
+<h4 class="mb-4">Search results for "{{ query }}"</h4>
+{% endif %}
+
+<div class="tweets-container">
+    {% for tweet in tweets %}
+    <div class="card">
+        {% if tweet.user == request.user %}
+        <button class="menu-btn" onclick="toggleMenu('menu-{{ tweet.id }}')">⋮</button>
+        <div class="menu-options" id="menu-{{ tweet.id }}">
+            <a href="{% url 'tweet_edit' tweet.id %}">Edit</a>
+            <a href="{% url 'tweet_delete' tweet.id %}">Delete</a>
+        </div>
+        {% endif %}
+        
+        {% if tweet.photo %}
+        <img src="{{ tweet.photo.url }}" alt="Tweet image">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ tweet.user.username }}</h5>
+            <p class="card-text">{{ tweet.text }}</p>
+
+            <div class="tweet-actions">
+                <button onclick="likeTweet({{ tweet.id }})">👍 Like</button>
+                <button onclick="dislikeTweet({{ tweet.id }})">👎 Dislike</button>
+                <button onclick="commentTweet({{ tweet.id }})">💬 Comment</button>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No tweets found.</p>
+    {% endfor %}
+</div>
+
+<script>
+function toggleMenu(id) {
+    let menu = document.getElementById(id);
+    document.querySelectorAll('.menu-options').forEach(m => {
+        if (m.id !== id) m.style.display = 'none';
+    });
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.menu-btn') && !e.target.closest('.menu-options')) {
+        document.querySelectorAll('.menu-options').forEach(m => m.style.display = 'none');
+    }
+});
+
+function likeTweet(id) {
+    alert("You liked tweet ID: " + id);
+}
+function dislikeTweet(id) {
+    alert("You disliked tweet ID: " + id);
+}
+function commentTweet(id) {
+    let comment = prompt("Enter your comment for tweet ID: " + id);
+    if (comment) {
+        alert("Your comment: " + comment);
+    }
+}
+</script>
+
+{% endblock content %}

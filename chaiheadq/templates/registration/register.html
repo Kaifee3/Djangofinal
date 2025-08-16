@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    .login-container {
+        width: 600px;
+        color:black;
+        margin: 50px auto;
+        padding: 30px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        font-family: "Times New Roman", Times, serif;
+        font-size: 1.3em;
+    }
+
+    /* Hide ALL password help texts */
+    .helptext {
+        display: none !important;
+    }
+
+    .login-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2.1em;
+    }
+    .login-container input {
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 8px;
+        width: 100%;
+        margin: 8px 0;
+        color:black;
+    }
+    .login-container input:focus {
+        background-color: #e6f7ff;
+        border-color: #007bff;
+        outline: none;
+    }
+    .login-container button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+    .login-container p {
+        text-align: center;
+        margin-top: 15px;
+    }
+</style>
+
+<div class="login-container">
+    <h2>Register Form</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        {{ profile_form.as_p }}
+        <button type="submit" class="btn btn-primary">
+            Register
+        </button>
+    </form>
+
+    <p>If you already have an account, <a href="{% url 'login' %}">login here</a>.</p>
+</div>
+{% endblock %}

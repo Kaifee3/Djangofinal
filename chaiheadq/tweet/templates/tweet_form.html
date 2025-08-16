@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Tweet
+{% endblock title %}
+
+{% block content %}
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f8;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    h2 {
+        text-align: center;
+        margin: 15px 0;
+        font-size: 22px;
+        color: #444;
+    }
+
+    .tweet-form {
+        max-width: 500px;
+        margin: 30px auto;
+        padding: 25px;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .tweet-form p {
+        margin-bottom: 15px;
+    }
+
+    .tweet-form label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .tweet-form input[type="text"],
+    .tweet-form input[type="file"],
+    .tweet-form textarea,
+    .tweet-form select {
+        background: #ffffff;
+        color:black;
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 20px;
+        transition: border 0.3s ease;
+    }
+
+    .tweet-form input:focus,
+    .tweet-form textarea:focus,
+    .tweet-form select:focus {
+        border-color: #3498db;
+        outline: none;
+    }
+
+    .tweet-form button {
+        width: 100%;
+        background-color: #3498db;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        transition: background 0.3s ease;
+    }
+
+    .tweet-form button:hover {
+        background-color: #2980b9;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #3498db;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
+
+    .back-link:hover {
+        color: #21618c;
+        text-decoration: underline;
+    }
+</style>
+
+<h1>Welcome to chai's Django project</h1>
+
+<h2>
+    {% if form.instance.pk %}
+        Edit Tweet
+    {% else %}
+        Create Tweet
+    {% endif %}
+</h2>
+
+<form method="post" enctype="multipart/form-data" class="tweet-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+<a href="{% url 'tweet_list' %}" class="back-link">⬅ Back to tweet list</a>
+
+{% endblock content %}

@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 500px;  
+        color: black;
+        margin: 50px auto 80px auto; 
+        padding: 30px;
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        font-family: "Times New Roman", Times, serif;
+        font-size: 1.2em;
+        text-align: center;
+    }
+
+    .profile-container h2 {
+        font-weight: bold;
+        color: red;
+        margin-bottom: 20px;
+    }
+
+    .profilePhoto {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #007bff;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+    }
+
+    @media (max-width: 600px) {
+        .profile-container {
+            width: 90%;
+            font-size: 1em;
+            padding: 20px;
+        }
+
+        .profilePhoto {
+            width: 100px;
+            height: 100px;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <h2>Profile Page</h2>
+    {% if user.profile.profilePhoto %}
+        <img src="{{ user.profile.profilePhoto.url }}" alt="Profile Photo" class="profilePhoto">
+    {% else %}
+        <img src="{% static 'default.png' %}" alt="Profile Photo" class="profilePhoto">
+    {% endif %}
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+</div>
+{% endblock %}
