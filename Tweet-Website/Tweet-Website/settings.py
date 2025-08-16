@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'chaiheadq.urls'
+ROOT_URLCONF = 'Tweet-Website.urls'
 
 TEMPLATES = [
     {
@@ -67,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'chaiheadq.wsgi.application'
+WSGI_APPLICATION = 'Tweet-Website.wsgi.application'
 
 
 # Database
