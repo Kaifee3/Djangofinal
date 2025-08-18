@@ -6,7 +6,7 @@
     .profile-container {
         max-width: 500px;  
         color: black;
-        margin: 50px auto 80px auto; 
+        margin: 50px auto 40px auto; 
         padding: 30px;
         background-color: white;
         border-radius: 12px;
@@ -32,17 +32,78 @@
         margin-bottom: 20px;
     }
 
-    @media (max-width: 600px) {
-        .profile-container {
-            width: 90%;
-            font-size: 1em;
-            padding: 20px;
-        }
+    .tweets-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-top: 30px;
+    }
 
-        .profilePhoto {
-            width: 100px;
-            height: 100px;
-        }
+    .card {
+        width: 25rem;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        background: black;
+        position: relative;
+    }
+
+    .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: white;
+    }
+
+    .card-text {
+        font-size: 15px;
+        color: white;
+        margin-top: 8px;
+    }
+
+    .menu-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: transparent;
+        border: none;
+        font-size: 50px;
+        cursor: pointer;
+        color: green;
+    }
+
+    .menu-options {
+        display: none;
+        position: absolute;
+        top: 35px;
+        right: 10px;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    .menu-options a {
+        display: block;
+        padding: 8px 12px;
+        font-size: 14px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .menu-options a:hover {
+        background: #f5f5f5;
     }
 </style>
 
@@ -53,7 +114,49 @@
     {% else %}
         <img src="{% static 'default.png' %}" alt="Profile Photo" class="profilePhoto">
     {% endif %}
+
     <p><strong>Username:</strong> {{ user.username }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
 </div>
+
+<h2 class="text-center">Your Tweets</h2>
+<div class="tweets-container">
+    {% for tweet in tweets %}
+    <div class="card">
+        {% if tweet.user.id == request.user.id %}
+        <button class="menu-btn" onclick="toggleMenu('menu-{{ tweet.id }}')">⋮</button>
+        <div class="menu-options" id="menu-{{ tweet.id }}">
+            <a href="{% url 'tweet_edit' tweet.id %}">Edit</a>
+            <a href="{% url 'tweet_delete' tweet.id %}">Delete</a>
+        </div>
+        {% endif %}
+
+        {% if tweet.photo %}
+        <img src="{{ tweet.photo.url }}" alt="Tweet image">
+        {% endif %}
+        <div class="card-body">
+            <h5 class="card-title">{{ tweet.user.username }}</h5>
+            <p class="card-text">{{ tweet.text }}</p>
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center">You haven’t tweeted yet.</p>
+    {% endfor %}
+</div>
+
+<script>
+function toggleMenu(id) {
+    let menu = document.getElementById(id);
+    document.querySelectorAll('.menu-options').forEach(m => {
+        if (m.id !== id) m.style.display = 'none';
+    });
+    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.menu-btn') && !e.target.closest('.menu-options')) {
+        document.querySelectorAll('.menu-options').forEach(m => m.style.display = 'none');
+    }
+});
+</script>
 {% endblock %}

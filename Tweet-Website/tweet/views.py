@@ -56,7 +56,7 @@ def tweet_delete(request, tweet_id):
 def register(request):
     if request.method == "POST":
         user_form = UserRegistrationForm(request.POST)
-        profile_form = ProfileForm(request.POST, request.FILES)  # handle uploaded files
+        profile_form = ProfileForm(request.POST, request.FILES)  
 
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
@@ -91,4 +91,9 @@ def tweet_list(request):
     return render(request, 'tweet_list.html', {'tweets': tweets, 'query': query})
 
 def profile_view(request):
-    return render(request, 'registration/profile.html')
+    tweets = tweet.objects.filter(user=request.user).order_by('-created_at')
+
+    context = {
+        "tweets": tweets,
+    }
+    return render(request, 'registration/profile.html', context)

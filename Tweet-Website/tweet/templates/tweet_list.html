@@ -139,6 +139,32 @@ Chai our tweet
     .tweet-actions button:hover {
         color: #1DA1F2; 
     }
+
+    .comment-box {
+        margin-top: 10px;
+        display: none;
+    }
+
+    .comment-box input {
+        width: 80%;
+        padding: 6px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    .comment-box button {
+        padding: 6px 10px;
+        margin-left: 5px;
+        border: none;
+        background: #1DA1F2;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .comment-box button:hover {
+        background: #0d8ddb;
+    }
 </style>
 
 <div class="create-tweet-box">
@@ -156,8 +182,8 @@ Chai our tweet
 
 <div class="tweets-container">
     {% for tweet in tweets %}
-    <div class="card">
-        {% if tweet.user == request.user %}
+    <div class="card" id="tweet-{{ tweet.id }}">
+        {% if tweet.user.id == request.user.id %}
         <button class="menu-btn" onclick="toggleMenu('menu-{{ tweet.id }}')">⋮</button>
         <div class="menu-options" id="menu-{{ tweet.id }}">
             <a href="{% url 'tweet_edit' tweet.id %}">Edit</a>
@@ -173,9 +199,14 @@ Chai our tweet
             <p class="card-text">{{ tweet.text }}</p>
 
             <div class="tweet-actions">
-                <button onclick="likeTweet({{ tweet.id }})">👍 Like</button>
-                <button onclick="dislikeTweet({{ tweet.id }})">👎 Dislike</button>
-                <button onclick="commentTweet({{ tweet.id }})">💬 Comment</button>
+                <button onclick="likeTweet({{ tweet.id }})">👍 <span id="like-count-{{ tweet.id }}">0</span></button>
+                <button onclick="dislikeTweet({{ tweet.id }})">👎 <span id="dislike-count-{{ tweet.id }}">0</span></button>
+                <button onclick="toggleCommentBox({{ tweet.id }})">💬 <span id="comment-count-{{ tweet.id }}">0</span></button>
+            </div>
+
+            <div class="comment-box" id="comment-box-{{ tweet.id }}">
+                <input type="text" id="comment-input-{{ tweet.id }}" placeholder="Write a comment...">
+                <button onclick="submitComment({{ tweet.id }})">Post</button>
             </div>
         </div>
     </div>
@@ -199,16 +230,31 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// Like & Dislike counters
 function likeTweet(id) {
-    alert("You liked tweet ID: " + id);
+    let likeCount = document.getElementById("like-count-" + id);
+    likeCount.innerText = parseInt(likeCount.innerText) + 1;
 }
 function dislikeTweet(id) {
-    alert("You disliked tweet ID: " + id);
+    let dislikeCount = document.getElementById("dislike-count-" + id);
+    dislikeCount.innerText = parseInt(dislikeCount.innerText) + 1;
 }
-function commentTweet(id) {
-    let comment = prompt("Enter your comment for tweet ID: " + id);
-    if (comment) {
-        alert("Your comment: " + comment);
+
+// Comment box toggle
+function toggleCommentBox(id) {
+    let box = document.getElementById("comment-box-" + id);
+    box.style.display = (box.style.display === "block") ? "none" : "block";
+}
+
+// Submit comment
+function submitComment(id) {
+    let input = document.getElementById("comment-input-" + id);
+    let commentCount = document.getElementById("comment-count-" + id);
+
+    if (input.value.trim() !== "") {
+        commentCount.innerText = parseInt(commentCount.innerText) + 1;
+        input.value = "";
+        document.getElementById("comment-box-" + id).style.display = "none";
     }
 }
 </script>
